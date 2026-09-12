@@ -210,6 +210,25 @@ UK-Flow15 period were located at the same timestamps and matched exactly to
 0.001 m³/s. This verifies the source values but does not imply that the open
 declustering algorithm reproduces the curated NRFA POT event selection.
 
+### Event-independence sensitivity
+
+The 99.7th-percentile threshold was held fixed while the required uninterrupted
+below-threshold interval was varied from 24 hours to seven days. Retained event
+counts decline from 109 to 95 and the estimated Q100 ranges from 90.39 to
+96.29 m³/s; the selected 72-hour rule gives 99 events and Q100 = 92.07 m³/s.
+Consequently, the main POT conclusion is not determined by a single plausible
+event-separation interval.
+
+![POT event-independence sensitivity](docs/figures/pot_independence_sensitivity.png)
+
+A Ljung–Box test applied to ranked, chronologically ordered peak magnitudes at
+lags 1–5 finds no statistically significant residual serial dependence under
+any tested rule (p = 0.165–0.946). This supports, but cannot prove, independence:
+the test concerns serial association between retained magnitudes and does not
+verify meteorological independence, catchment recovery or compliance with the
+formal FEH POT procedure. The full sensitivity results are retained in
+`outputs/pot_independence_sensitivity.csv`.
+
 ## Model diagnostics and temporal stability
 
 Probability plots and small-sample corrected Akaike information criteria were
@@ -299,13 +318,11 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
 
 ## Next analyses
 
-1. Compare alternative POT independence rules and formally assess residual
-   dependence between events.
-2. Evaluate non-stationary extreme-value models only if justified by covariates
+1. Evaluate non-stationary extreme-value models only if justified by covariates
    or longer records.
-3. Add rainfall-linked event hydrographs when a suitable openly licensed rainfall
+2. Add rainfall-linked event hydrographs when a suitable openly licensed rainfall
    record is confirmed.
-4. Compare the transparent estimates with legitimately obtained FEH results,
+3. Compare the transparent estimates with legitimately obtained FEH results,
    without redistributing licensed inputs.
 
 ## Software licence

@@ -19,6 +19,31 @@ class GPDFit:
     record_years: float
 
 
+def ljung_box_rank_test(values: pd.Series | np.ndarray, max_lag: int = 5) -> tuple[float, float]:
+    """Test serial dependence in ordered peak magnitudes using rank autocorrelations.
+
+    Ranking limits sensitivity to individual exceptional floods.  The returned
+    values are the Ljung--Box Q statistic and its chi-square p-value.
+    """
+    ranks = stats.rankdata(np.asarray(values, dtype=float))
+    n = len(ranks)
+    if n <= max_lag + 1:
+        raise ValueError("The series is too short for the requested maximum lag")
+    centred = ranks - ranks.mean()
+    denominator = float(np.dot(centred, centred))
+    if denominator == 0:
+        raise ValueError("Serial dependence is undefined for a constant series")
+    correlations = [
+        float(np.dot(centred[lag:], centred[:-lag]) / denominator)
+        for lag in range(1, max_lag + 1)
+    ]
+    statistic = n * (n + 2) * sum(
+        correlation**2 / (n - lag)
+        for lag, correlation in enumerate(correlations, start=1)
+    )
+    return float(statistic), float(stats.chi2.sf(statistic, df=max_lag))
+
+
 def decluster_exceedances(
     data: pd.DataFrame,
     threshold: float,
@@ -93,4 +118,3 @@ def bootstrap_gpd_levels(
         .rename(columns={0.025: "lower_95_m3s", 0.5: "median_m3s", 0.975: "upper_95_m3s"})
         .reset_index()
     )
-

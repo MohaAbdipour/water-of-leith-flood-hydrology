@@ -1,7 +1,8 @@
 import pandas as pd
+import numpy as np
 from pathlib import Path
 
-from water_of_leith.pot import GPDFit, decluster_exceedances, gpd_return_level
+from water_of_leith.pot import GPDFit, decluster_exceedances, gpd_return_level, ljung_box_rank_test
 from water_of_leith.nrfa import read_nrfa_pot
 
 
@@ -18,6 +19,15 @@ def test_decluster_retains_largest_peak_within_run():
 def test_return_level_increases_with_period():
     fit = GPDFit(threshold=10.0, shape=0.1, scale=3.0, event_rate_per_year=3.0, event_count=60, record_years=20.0)
     assert gpd_return_level(fit, 100) > gpd_return_level(fit, 10)
+
+
+def test_rank_ljung_box_distinguishes_repeated_sequence():
+    independent = pd.Series(np.random.default_rng(19006).permutation(100))
+    repeated = pd.Series(np.arange(100))
+    _, independent_p = ljung_box_rank_test(independent, max_lag=5)
+    _, repeated_p = ljung_box_rank_test(repeated, max_lag=5)
+    assert independent_p > 0.05
+    assert repeated_p < 0.05
 
 
 def test_nrfa_pot_parser(tmp_path: Path):
