@@ -241,6 +241,29 @@ but Log-Pearson III and GEV remain plausible (ΔAICc = 1.24 and 1.52). The chang
 in model ranking between record periods further supports retaining multiple
 distributions rather than selecting a model from the shorter series alone.
 
+## Sensitivity to the 2016–2017 rating transition
+
+The Murrayfield station history identifies flood-defence works and channel
+adjustment around October 2016–October 2017, followed by development of a revised
+high-flow rating. Water year 2017 was therefore treated as a transition period,
+with ≤2016 and ≥2018 defined as pre- and post-works groups.
+
+![Rating-transition sensitivity](docs/figures/rating_transition_sensitivity.png)
+
+The post-works median annual maximum is 42.54 m³/s, compared with 29.59 m³/s
+before the works. However, the post-works group contains only six complete open-
+record years. Its median difference of 12.95 m³/s has a bootstrap 95% interval
+from −5.78 to 25.28 m³/s, and a Mann–Whitney comparison is non-significant
+(p = 0.273). The longer restricted NRFA record gives the same conclusion
+(53 pre-works and eight post-works years; p = 0.342).
+
+Excluding transition water year 2017 increases Q100 by 2.2% for GEV, 1.6% for
+Gumbel and 2.6% for Log-Pearson III. The transition year is therefore not
+driving the fitted return levels. Neither the non-significant era comparison nor
+the small exclusion sensitivity proves rating homogeneity: the post-works sample
+is too short to separate instrumentation and rating effects from natural flood
+variability.
+
 ## Reproduce the analysis
 
 ```bash
@@ -251,6 +274,7 @@ python scripts/download_ukflow15.py
 python scripts/run_analysis.py
 python scripts/run_pot_analysis.py
 python scripts/run_diagnostics.py
+python scripts/run_rating_sensitivity.py
 # Optional after obtaining NRFA v15 under its own licence:
 python scripts/validate_against_nrfa.py
 pytest
@@ -277,12 +301,11 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
 
 1. Compare alternative POT independence rules and formally assess residual
    dependence between events.
-2. Test targeted sensitivity to the 2016–2017 rating and flood-defence works.
-3. Evaluate non-stationary extreme-value models only if justified by covariates
+2. Evaluate non-stationary extreme-value models only if justified by covariates
    or longer records.
-4. Add rainfall-linked event hydrographs when a suitable openly licensed rainfall
+3. Add rainfall-linked event hydrographs when a suitable openly licensed rainfall
    record is confirmed.
-5. Compare the transparent estimates with legitimately obtained FEH results,
+4. Compare the transparent estimates with legitimately obtained FEH results,
    without redistributing licensed inputs.
 
 ## Software licence

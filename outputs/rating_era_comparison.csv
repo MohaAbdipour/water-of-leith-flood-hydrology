@@ -1,0 +1,2 @@
+pre_years,post_years,pre_median_m3s,post_median_m3s,post_minus_pre_median_m3s,bootstrap_difference_lower_95_m3s,bootstrap_difference_upper_95_m3s,mann_whitney_u,mann_whitney_p_value
+24,6,29.5865,42.538,12.951499999999996,-5.778000000000002,25.277500000000003,50.0,0.2728306176582038

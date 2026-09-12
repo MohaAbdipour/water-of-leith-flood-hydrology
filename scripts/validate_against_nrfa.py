@@ -14,6 +14,7 @@ import pandas as pd
 
 from water_of_leith.frequency import bootstrap_return_levels, fit_models, read_ukflow15, return_levels
 from water_of_leith.diagnostics import model_diagnostics, trend_summary
+from water_of_leith.rating_sensitivity import era_comparison
 from water_of_leith.nrfa import (
     comparison_summary,
     pot_comparison_summary,
@@ -59,6 +60,9 @@ def main() -> None:
     )
     pd.DataFrame([trend_summary(full_for_analysis)]).to_csv(
         "outputs/nrfa_full_record_temporal_stability.csv", index=False
+    )
+    pd.DataFrame([era_comparison(full_for_analysis)]).to_csv(
+        "outputs/nrfa_full_rating_era_comparison.csv", index=False
     )
 
     overlap_results = pd.read_csv("outputs/return_levels.csv")
