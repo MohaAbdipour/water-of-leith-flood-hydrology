@@ -28,6 +28,20 @@ duplicated in this repository; the download script retrieves station `019006`
 and its metadata directly from the official catalogue. This keeps provenance
 explicit and avoids maintaining an uncontrolled copy of the source archive.
 
+Hourly rainfall for the rainfall–runoff analysis comes from **CEH-GEAR1hr v2**,
+a 1-km gridded dataset derived by temporally disaggregating CEH-GEAR daily
+rainfall using quality-controlled sub-daily gauges. It covers 1990–2016 and is
+available under the Open Government Licence v3:
+
+> Lewis, E. et al. (2022). *Gridded estimates of hourly areal rainfall for
+> Great Britain 1990–2016 [CEH-GEAR1hr] v2.* NERC EDS Environmental
+> Information Data Centre. https://doi.org/10.5285/fc9423d6-3d54-467f-bb2b-fc7357a3941f
+
+Contains data supplied by UK Centre for Ecology & Hydrology. Raw rainfall is
+retrieved from the official public cloud store, reduced to the station 19006
+catchment and kept outside version control. The source catchment boundary is
+used for spatial selection but is not redistributed.
+
 ## Analytical workflow
 
 ### 1. Data acquisition and provenance
@@ -92,6 +106,13 @@ Interpretation considers rating uncertainty, hydraulic controls, reservoir
 regulation, urban influence and the 2016–2017 flood-defence works. The results
 are scientific diagnostics and are not suitable for engineering design or
 operational flood management.
+
+### 11. Rainfall–runoff event analysis
+
+CEH-GEAR1hr rainfall grid centres inside the station 19006 catchment were
+averaged hourly and aligned with independent POT peaks. Antecedent 24-, 48- and
+72-hour totals, maximum hourly rainfall, rainfall-to-flow timing and source-data
+quality indicators were calculated for each event in the 1992–2016 overlap.
 
 ## Record integrity
 
@@ -278,6 +299,42 @@ only with a physically motivated covariate, longer post-change evidence and an
 explicit treatment of reservoir operation and rating uncertainty. Full model
 statistics are in `outputs/nonstationary_model_comparison.csv`.
 
+## Rainfall–runoff behaviour
+
+The CEH-GEAR1hr extraction contains 215,520 hourly values from 1 June 1992 to
+31 December 2016 with no missing catchment-mean rainfall hours. One hundred
+1-km grid centres fall inside the boundary, compared with a polygon area of
+102.39 km². This raster representation is slightly smaller than the NRFA's
+rounded published catchment area of 107 km² and should not be interpreted as a
+revised catchment-area estimate.
+
+Seventy-nine independently declustered POT events have complete rainfall
+coverage. Peak flow has a moderate positive rank association with antecedent
+rainfall:
+
+| Rainfall duration | Spearman ρ | p-value |
+|---:|---:|---:|
+| 24 hours | 0.518 | 1.03 × 10⁻⁶ |
+| 48 hours | 0.461 | 1.87 × 10⁻⁵ |
+| 72 hours | 0.538 | 3.11 × 10⁻⁷ |
+
+![Rainfall-linked flood hydrographs](docs/figures/rainfall_linked_hydrographs.png)
+
+The April 2000 flood, the largest in the open record, followed 97.90 mm of
+catchment-mean rainfall over 72 hours; its maximum hourly rainfall preceded the
+flow peak by five hours. Across all events, the median lag from the wettest hour
+in the preceding 72 hours to peak flow is five hours (interquartile range
+3–15 hours). These are event associations rather than a calibrated rainfall–
+runoff model: antecedent wetness, reservoir operation, storm movement and urban
+drainage are not explicitly represented.
+
+CEH-GEAR1hr includes two essential quality diagnostics. Across event windows,
+the mean fraction of catchment cells using statistical rather than observed
+storm disaggregation is 0.152, and the maximum distance to a source gauge ranges
+from 6.36 to 17.82 km. These limitations are retained per event in
+`outputs/rainfall_linked_flood_events.csv`; they are not hidden by the areal
+average.
+
 ## Sensitivity to the 2016–2017 rating transition
 
 The Murrayfield station history identifies flood-defence works and channel
@@ -336,9 +393,11 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
 
 ## Next analyses
 
-1. Add rainfall-linked event hydrographs after confirming a suitable openly
-   licensed rainfall record.
-2. Compare the transparent estimates with legitimately obtained FEH results,
+1. Test the sensitivity of rainfall–runoff metrics to spatial averaging and
+   CEH-GEAR1hr statistical-disaggregation flags.
+2. Classify single- and multi-peak storm hydrographs and quantify event response
+   times without implying a calibrated deterministic model.
+3. Compare the transparent estimates with legitimately obtained FEH results,
    without redistributing licensed inputs.
 
 ## Software licence

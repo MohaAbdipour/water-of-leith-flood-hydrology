@@ -1,0 +1,2 @@
+dataset,station,start,end,hourly_observations,catchment_grid_centres,boundary_area_km2,rainfall_missing_hours,hours_using_any_statistical_disaggregation,maximum_source_gauge_distance_km
+CEH-GEAR1hr v2,19006,1992-06-01,2016-12-31 23:00:00,215520,100,102.38874719517595,0,124882,17.8245
