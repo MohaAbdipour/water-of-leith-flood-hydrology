@@ -260,6 +260,24 @@ but Log-Pearson III and GEV remain plausible (ΔAICc = 1.24 and 1.52). The chang
 in model ranking between record periods further supports retaining multiple
 distributions rather than selecting a model from the shorter series alone.
 
+### Non-stationary model decision
+
+Stationary GEV was compared with nested models allowing a linear change in the
+location parameter, the log-scale parameter, or both. Time was centred and
+standardised before maximum-likelihood estimation. All four fits converged, but
+the stationary model has the lowest small-sample corrected AIC (AICc = 246.11).
+The location-only and scale-only alternatives have ΔAICc values of 1.02 and
+0.62, while the joint model has ΔAICc = 3.33.
+
+Likelihood-ratio tests do not support adding a location trend (p = 0.202), a
+scale trend (p = 0.154), or both terms (p = 0.336). These results agree with the
+rank-based trend diagnostics and do not justify reporting non-stationary design
+flows from this 31-year series. Calendar time is also only a proxy, not a causal
+hydroclimatic covariate. Non-stationary modelling should therefore be revisited
+only with a physically motivated covariate, longer post-change evidence and an
+explicit treatment of reservoir operation and rating uncertainty. Full model
+statistics are in `outputs/nonstationary_model_comparison.csv`.
+
 ## Sensitivity to the 2016–2017 rating transition
 
 The Murrayfield station history identifies flood-defence works and channel
@@ -318,11 +336,9 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
 
 ## Next analyses
 
-1. Evaluate non-stationary extreme-value models only if justified by covariates
-   or longer records.
-2. Add rainfall-linked event hydrographs when a suitable openly licensed rainfall
-   record is confirmed.
-3. Compare the transparent estimates with legitimately obtained FEH results,
+1. Add rainfall-linked event hydrographs after confirming a suitable openly
+   licensed rainfall record.
+2. Compare the transparent estimates with legitimately obtained FEH results,
    without redistributing licensed inputs.
 
 ## Software licence
