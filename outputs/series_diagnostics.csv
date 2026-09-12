@@ -1,0 +1,2 @@
+start,end,observations,duplicate_timestamps,irregular_steps,missing_flows,negative_flows,flagged_observations
+1992-06-01 09:00:00,2023-12-31 23:45:00,1107420,0,0,0,0,4

@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.mplconfig/
+*.egg-info/
+data/raw/*.csv
+!data/raw/README.md

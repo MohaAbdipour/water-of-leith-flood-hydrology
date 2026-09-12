@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this analysis, please cite both this repository and UK-Flow15."
+title: "Flood hydrology of the Water of Leith at Murrayfield"
+type: software
+authors:
+  - family-names: Abdipour
+    given-names: Moha
+year: 2026
+license: MIT
+repository-code: "https://github.com/MohaAbdipour/water-of-leith-flood-hydrology"
+
