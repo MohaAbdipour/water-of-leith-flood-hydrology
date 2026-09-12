@@ -180,6 +180,36 @@ results become available.
 Acknowledgement: Data from the UK National River Flow Archive, Peak Flow
 Dataset version 15.
 
+## Peaks-over-threshold analysis
+
+An independent POT series was extracted from UK-Flow15 using a threshold of
+18.18 m³/s (the 99.7th percentile) and 72-hour run declustering. The threshold
+gives 99 independent events, or 3.13 events per year, and was selected to obtain
+an event rate close to the conventional POT3 density while retaining a fully
+transparent, reproducible rule.
+
+A Generalised Pareto distribution fitted to threshold excesses has shape
+parameter 0.176 and scale 7.44 m³/s. The fitted POT-GPD estimates are:
+
+| Return period | Flow estimate (m³/s) | Bootstrap 95% interval (m³/s) |
+|---:|---:|---:|
+| 10 years | 52.72 | 42.60–64.73 |
+| 50 years | 78.64 | 55.18–115.17 |
+| 100 years | 92.07 | 59.84–149.07 |
+| 200 years | 107.19 | 64.31–192.15 |
+
+![POT threshold sensitivity](docs/figures/pot_threshold_sensitivity.png)
+
+Thresholds from the 99.5th to 99.9th percentile produce Q100 estimates between
+84.97 and 95.26 m³/s. The relative stability supports the selected threshold,
+although uncertainty remains large in the upper tail. This 72-hour run rule is
+not claimed to reproduce formal FEH event-independence procedures.
+
+As a restricted-data validation, all 284 official NRFA POT events within the
+UK-Flow15 period were located at the same timestamps and matched exactly to
+0.001 m³/s. This verifies the source values but does not imply that the open
+declustering algorithm reproduces the curated NRFA POT event selection.
+
 ## Reproduce the analysis
 
 ```bash
@@ -188,6 +218,9 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 python scripts/download_ukflow15.py
 python scripts/run_analysis.py
+python scripts/run_pot_analysis.py
+# Optional after obtaining NRFA v15 under its own licence:
+python scripts/validate_against_nrfa.py
 pytest
 ```
 
@@ -210,9 +243,9 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
 
 ## Next analyses
 
-1. Compare the 15-minute annual maxima against the official NRFA peak-flow
-   series and investigate discrepancies.
-2. Extract independent peaks over threshold and fit a Generalised Pareto model.
+1. Compare alternative POT independence rules and formally assess residual
+   dependence between events.
+2. Add probability plots, goodness-of-fit diagnostics and information criteria.
 3. Test temporal change points, trends and sensitivity to the 2016–2017 works.
 4. Add rainfall-linked event hydrographs when a suitable openly licensed rainfall
    record is confirmed.

@@ -56,3 +56,36 @@ def comparison_summary(ukflow_maxima: pd.DataFrame, nrfa_maxima: pd.DataFrame) -
         "nrfa_rejected_values_present": int((~nrfa_maxima["accepted"]).sum()),
         "nrfa_accepted_years": int(nrfa_maxima["accepted"].sum()),
     }
+
+
+def read_nrfa_pot(path: str | Path) -> pd.DataFrame:
+    """Parse event timestamps and flows from a local WINFAP POT file."""
+    lines = Path(path).read_text(encoding="utf-8-sig").splitlines()
+    records = []
+    for line in _section(lines, "[POT Values]"):
+        date_text, flow_text, stage_text = (part.strip() for part in line.split(","))
+        records.append({
+            "peak_datetime": pd.to_datetime(date_text).tz_localize(None),
+            "peak_flow_m3s": float(flow_text),
+            "peak_stage_m": float(stage_text),
+        })
+    return pd.DataFrame(records)
+
+
+def pot_comparison_summary(ukflow: pd.DataFrame, nrfa_pot: pd.DataFrame) -> dict[str, int | float]:
+    """Compare official POT events with UK-Flow15 values at identical timestamps."""
+    source = ukflow.set_index("datetime")["value"]
+    overlap = nrfa_pot[
+        (nrfa_pot["peak_datetime"] >= ukflow["datetime"].min())
+        & (nrfa_pot["peak_datetime"] <= ukflow["datetime"].max())
+    ].copy()
+    overlap["ukflow_m3s"] = overlap["peak_datetime"].map(source)
+    differences = overlap["ukflow_m3s"] - overlap["peak_flow_m3s"]
+    return {
+        "overlap_events": len(overlap),
+        "flow_matches_at_0_001_m3s": int(np.isclose(differences, 0, atol=0.001).sum()),
+        "missing_timestamps": int(overlap["ukflow_m3s"].isna().sum()),
+        "mean_bias_m3s": float(differences.mean()),
+        "mae_m3s": float(differences.abs().mean()),
+        "maximum_absolute_difference_m3s": float(differences.abs().max()),
+    }

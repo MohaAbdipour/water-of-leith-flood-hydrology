@@ -12,10 +12,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from water_of_leith.frequency import bootstrap_return_levels, fit_models, return_levels
-from water_of_leith.nrfa import comparison_summary, read_nrfa_am
+from water_of_leith.frequency import bootstrap_return_levels, fit_models, read_ukflow15, return_levels
+from water_of_leith.nrfa import (
+    comparison_summary,
+    pot_comparison_summary,
+    read_nrfa_am,
+    read_nrfa_pot,
+)
 
 NRFA_FILE = Path("data/restricted/nrfa-v15/suitable-for-pooling/019006-water-of-leith-at-murrayfield.am")
+NRFA_POT_FILE = NRFA_FILE.with_suffix(".pt")
 
 
 def main() -> None:
@@ -34,6 +40,12 @@ def main() -> None:
         "nrfa_at_site_qmed_m3s": float(accepted["peak_flow_m3s"].median()),
     })
     pd.DataFrame([summary]).to_csv("outputs/nrfa_validation_summary.csv", index=False)
+
+    ukflow_series = read_ukflow15("data/raw/019006.csv")
+    nrfa_pot = read_nrfa_pot(NRFA_POT_FILE)
+    pd.DataFrame([pot_comparison_summary(ukflow_series, nrfa_pot)]).to_csv(
+        "outputs/nrfa_pot_validation_summary.csv", index=False
+    )
 
     periods = [2, 5, 10, 20, 50, 100, 200]
     levels = return_levels(fit_models(accepted), periods)
