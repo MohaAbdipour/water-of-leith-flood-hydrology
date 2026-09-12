@@ -335,6 +335,30 @@ from 6.36 to 17.82 km. These limitations are retained per event in
 `outputs/rainfall_linked_flood_events.csv`; they are not hidden by the areal
 average.
 
+### Sensitivity to rainfall-data quality
+
+The event correlations were recalculated after progressively excluding periods
+with greater reliance on CEH-GEAR1hr statistical disaggregation or more distant
+source gauges. For 72-hour rainfall, Spearman correlation remains positive
+under every filter, ranging from 0.463 for the 27 events using no statistical
+disaggregation to 0.706 for the 26 events satisfying both the ≤0.10 mean-
+disaggregation and ≤10 km distance criteria.
+
+![Rainfall-quality sensitivity](docs/figures/rainfall_quality_sensitivity.png)
+
+Paired bootstrap 95% intervals exclude zero for all six 72-hour comparisons.
+The unrestricted estimate is 0.538 (95% interval 0.380–0.684); the strict joint
+filter gives 0.706 (0.416–0.877). Associations for 24- and 48-hour totals are
+also positive under every tested filter. The persistence of the relationship
+supports the conclusion that greater event rainfall is associated with larger
+flood peaks, rather than that result being created by the lowest-quality hours.
+
+The larger coefficients after filtering must not be interpreted as proof that
+the strict subset is physically superior: the filters change both sample size
+and storm composition, and their intervals overlap. This is a measurement-
+quality sensitivity analysis, not correction for rainfall error. Complete
+results are in `outputs/rainfall_quality_sensitivity.csv`.
+
 ## Sensitivity to the 2016–2017 rating transition
 
 The Murrayfield station history identifies flood-defence works and channel
@@ -393,11 +417,9 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
 
 ## Next analyses
 
-1. Test the sensitivity of rainfall–runoff metrics to spatial averaging and
-   CEH-GEAR1hr statistical-disaggregation flags.
-2. Classify single- and multi-peak storm hydrographs and quantify event response
+1. Classify single- and multi-peak storm hydrographs and quantify event response
    times without implying a calibrated deterministic model.
-3. Compare the transparent estimates with legitimately obtained FEH results,
+2. Compare the transparent estimates with legitimately obtained FEH results,
    without redistributing licensed inputs.
 
 ## Software licence
