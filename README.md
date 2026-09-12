@@ -28,6 +28,71 @@ duplicated in this repository; the download script retrieves station `019006`
 and its metadata directly from the official catalogue. This keeps provenance
 explicit and avoids maintaining an uncontrolled copy of the source archive.
 
+## Analytical workflow
+
+### 1. Data acquisition and provenance
+
+Fifteen-minute discharge observations for the Water of Leith at Murrayfield
+were obtained from UK-Flow15. Dataset origin, licence, station identity and
+retrieval procedures were documented to maintain traceability and reproducibility.
+
+### 2. Hydrometric quality control
+
+The record was assessed for missing values, duplicate timestamps, irregular
+intervals, negative flows and UK-Flow15 quality flags. The sequence is complete,
+and the four flagged high flows have supporting hydrometeorological validation.
+
+### 3. Annual-maximum extraction
+
+The highest discharge in each complete October–September water year was
+extracted. Partial boundary years were excluded, producing 31 annual maxima for
+water years 1993–2023.
+
+### 4. Independent NRFA validation
+
+The extracted maxima were compared locally with the restricted NRFA Peak Flow
+Dataset v15. All 31 overlapping peak magnitudes and dates match, confirming that
+the UK-Flow15 extraction reproduces the current NRFA peak record for the common
+period.
+
+### 5. QMED estimation
+
+The median annual maximum was calculated as an at-site diagnostic statistic.
+The 62-year accepted NRFA record gives QMED = 31.00 m³/s, but the station's NRFA
+classification means this is not presented as an approved design value.
+
+### 6. Flood-frequency modelling
+
+GEV, Gumbel and Log-Pearson III distributions were fitted by maximum likelihood.
+Their return-level estimates were compared to quantify the sensitivity of rare-
+flood estimates to the assumed upper-tail model.
+
+### 7. Uncertainty analysis
+
+Non-parametric bootstrap resampling was used to refit every distribution and
+derive 95% intervals. The resulting Q100 intervals represent sampling and
+parameter uncertainty, not the full uncertainty in the hydrometric record.
+
+### 8. Record-length sensitivity
+
+Estimates from the 31-year open record were compared with results from 62
+accepted NRFA maxima. The longer record reduces upper-tail uncertainty and
+moderates the GEV and Log-Pearson III Q100 estimates.
+
+### 9. Relation to FEH practice
+
+The analysis provides a transparent statistical baseline informed by UK flood-
+estimation practice. It is not a formal FEH assessment because licensed FEH
+descriptors, donor adjustment, pooling procedures and proprietary software were
+not used.
+
+### 10. Interpretation and limitations
+
+Interpretation considers rating uncertainty, hydraulic controls, reservoir
+regulation, urban influence and the 2016–2017 flood-defence works. The results
+are scientific diagnostics and are not suitable for engineering design or
+operational flood management.
+
 ## Record integrity
 
 The downloaded station file contains 1,107,420 observations from 1 June 1992 to
