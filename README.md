@@ -359,6 +359,40 @@ and storm composition, and their intervals overlap. This is a measurement-
 quality sensitivity analysis, not correction for rainfall error. Complete
 results are in `outputs/rainfall_quality_sensitivity.csv`.
 
+### Storm and hydrograph classification
+
+Each 72-hour antecedent rainfall sequence was described by its D10–90 duration,
+the interval containing the central 80% of rainfall. Events were labelled
+concentrated (≤12 hours), intermediate (12–36 hours) or prolonged (>36 hours).
+Prominent rainfall and flow peaks were counted after three-hour smoothing, with
+a minimum six-hour separation and a prominence criterion tied to each event's
+range. These definitions are reproducible descriptive rules, not FEH event
+classes or automatically inferred physical regimes.
+
+Of the 79 events, 8 are concentrated, 25 intermediate and 46 prolonged. Seventy
+contain multiple rainfall bursts in the preceding 72 hours, while the observed
+flow windows contain 37 single-peak and 42 multi-peak hydrographs. The April
+2000 record flood is a prolonged, multi-burst and multi-peak event.
+
+![Flood-event classification](docs/figures/flood_event_classification.png)
+
+The median rainfall-centroid-to-flow-peak lag is 18.39 hours, compared with the
+five-hour median lag from the single wettest hour. This difference shows why a
+distributed-storm timing measure is needed for multi-burst events. Median time
+from the last 10%-amplitude crossing to peak flow is 8.0 hours, and median
+recession half-time is 5.25 hours. Concentrated storms have a shorter median
+centroid lag of 5.98 hours, whereas prolonged storms have a median of 20.71
+hours.
+
+Median peak flows are similar across the descriptive duration classes
+(22.10–24.38 m³/s) and between single- and multi-peak hydrographs (24.38 and
+22.38 m³/s). The classes therefore organise event morphology; they do not by
+themselves demonstrate distinct flood-generating populations. Reservoir
+operation, antecedent storage and urban drainage remain plausible controls.
+Event-level descriptors and grouped summaries are in
+`outputs/flood_event_classification.csv` and
+`outputs/flood_event_class_summary.csv`.
+
 ## Sensitivity to the 2016–2017 rating transition
 
 The Murrayfield station history identifies flood-defence works and channel
@@ -417,9 +451,11 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
 
 ## Next analyses
 
-1. Classify single- and multi-peak storm hydrographs and quantify event response
-   times without implying a calibrated deterministic model.
-2. Compare the transparent estimates with legitimately obtained FEH results,
+1. Add a licence-checked GIS catchment map showing the gauge, main drainage
+   system, reservoirs, elevation and urban context.
+2. Test the stability of event classes to peak-prominence and duration
+   thresholds before using them in any predictive model.
+3. Compare the transparent estimates with legitimately obtained FEH results,
    without redistributing licensed inputs.
 
 ## Software licence

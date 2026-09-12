@@ -1,0 +1,9 @@
+rainfall_duration_class,rainfall_structure,hydrograph_structure,events,median_peak_flow_m3s,median_centroid_lag_hours,median_rising_limb_hours,median_recession_half_time_hours
+concentrated (≤12 h),multi-burst,single-peak,1,19.532,7.548363897878453,7.75,5.5
+concentrated (≤12 h),single-burst,multi-peak,2,29.065,7.2380734698577385,6.75,10.5
+concentrated (≤12 h),single-burst,single-peak,5,23.698,5.746265067059014,4.0,5.0
+intermediate (12–36 h),multi-burst,multi-peak,9,21.413,15.859378484278928,15.5,5.0
+intermediate (12–36 h),multi-burst,single-peak,14,25.128,11.03566927029053,8.75,5.5
+intermediate (12–36 h),single-burst,single-peak,2,22.961,9.044243561603139,8.875,8.375
+prolonged (>36 h),multi-burst,multi-peak,31,23.422,23.887068793902678,8.25,5.0
+prolonged (>36 h),multi-burst,single-peak,15,21.827,18.38567123031634,8.0,6.0
