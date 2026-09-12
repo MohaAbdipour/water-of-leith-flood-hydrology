@@ -210,6 +210,37 @@ UK-Flow15 period were located at the same timestamps and matched exactly to
 0.001 m³/s. This verifies the source values but does not imply that the open
 declustering algorithm reproduces the curated NRFA POT event selection.
 
+## Model diagnostics and temporal stability
+
+Probability plots and small-sample corrected Akaike information criteria were
+used to assess the annual-maximum models. For the 31-year open series,
+Log-Pearson III has the lowest AICc, followed by GEV (ΔAICc = 0.24) and Gumbel
+(ΔAICc = 0.82). All differences are below two, so the evidence does not support
+selecting one distribution as decisively superior.
+
+![Annual-maximum probability plots](docs/figures/probability_plots.png)
+
+The descriptive probability-plot correlations are 0.986 for Log-Pearson III,
+0.985 for GEV and 0.971 for Gumbel. These diagnostics assess relative fit to the
+observed sample; they are not formal acceptance tests because parameters were
+estimated from the same data.
+
+![Temporal-stability diagnostics](docs/figures/temporal_stability.png)
+
+The open series gives Kendall τ = 0.015 (p = 0.919) and a Theil–Sen slope of
+0.003 m³/s/year (95% interval −0.558 to 0.479). The exploratory Pettitt test does
+not identify a significant single change point. These results provide no
+statistical evidence of monotonic change, but low power, reservoir regulation
+and rating revisions prevent interpreting non-significance as proof of
+stationarity.
+
+The 62-year accepted NRFA record leads to the same substantive conclusion:
+Kendall τ = 0.066 (p = 0.451), Theil–Sen slope = 0.073 m³/s/year (95% interval
+−0.124 to 0.242), and Pettitt p = 0.151. Gumbel has the lowest full-record AICc,
+but Log-Pearson III and GEV remain plausible (ΔAICc = 1.24 and 1.52). The change
+in model ranking between record periods further supports retaining multiple
+distributions rather than selecting a model from the shorter series alone.
+
 ## Reproduce the analysis
 
 ```bash
@@ -219,6 +250,7 @@ pip install -e ".[dev]"
 python scripts/download_ukflow15.py
 python scripts/run_analysis.py
 python scripts/run_pot_analysis.py
+python scripts/run_diagnostics.py
 # Optional after obtaining NRFA v15 under its own licence:
 python scripts/validate_against_nrfa.py
 pytest
@@ -245,8 +277,9 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
 
 1. Compare alternative POT independence rules and formally assess residual
    dependence between events.
-2. Add probability plots, goodness-of-fit diagnostics and information criteria.
-3. Test temporal change points, trends and sensitivity to the 2016–2017 works.
+2. Test targeted sensitivity to the 2016–2017 rating and flood-defence works.
+3. Evaluate non-stationary extreme-value models only if justified by covariates
+   or longer records.
 4. Add rainfall-linked event hydrographs when a suitable openly licensed rainfall
    record is confirmed.
 5. Compare the transparent estimates with legitimately obtained FEH results,
