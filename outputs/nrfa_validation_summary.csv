@@ -1,0 +1,2 @@
+overlap_years,flow_matches_at_0_001_m3s,peak_date_matches,mean_bias_m3s,mae_m3s,rmse_m3s,maximum_absolute_difference_m3s,pearson_correlation,nrfa_values,nrfa_rejected_values_present,nrfa_accepted_years,nrfa_version,nrfa_rejected_years_listed,nrfa_first_accepted_water_year,nrfa_last_accepted_water_year,nrfa_at_site_qmed_m3s
+31,31,31,0.0,0.0,0.0,0.0,1.0,64,2,62,15.0.2,3,1962,2025,31.002000000000002

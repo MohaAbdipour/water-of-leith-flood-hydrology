@@ -65,6 +65,41 @@ non-parametric bootstrap intervals that refit each model in every resample; they
 represent sampling and parameter uncertainty, but not rating-curve, temporal
 non-stationarity or model-structure uncertainty.
 
+## Validation against NRFA Peak Flow Dataset v15
+
+The locally held NRFA annual-maximum file was used as a restricted validation
+reference and is excluded from version control. Across all 31 overlapping water
+years, UK-Flow15 and NRFA v15 have:
+
+- 31/31 matching peak magnitudes to 0.001 m³/s;
+- 31/31 matching peak dates;
+- mean bias, MAE and RMSE of 0.000 m³/s;
+- Pearson correlation of 1.000.
+
+The agreement establishes that the annual maxima extracted from UK-Flow15
+reproduce the current authoritative peak-flow record over their common period.
+It does not independently validate the underlying stage–discharge rating.
+
+The NRFA file contains 64 recorded maxima and lists three rejected water years;
+two rejected years have values present in the AMAX section. Removing rejected
+values leaves 62 accepted maxima spanning water years 1962–2025. Analysis of
+that longer record gives QMED = **31.00 m³/s**, compared with 30.41 m³/s for the
+31-year open series.
+
+| Model | Q100 from 31-year UK-Flow15 overlap (m³/s) | Q100 from 62 accepted NRFA maxima (m³/s) | Full-record bootstrap 95% interval (m³/s) |
+|---|---:|---:|---:|
+| GEV | 102.20 | 82.77 | 61.76–117.97 |
+| Gumbel | 73.92 | 74.91 | 63.59–85.72 |
+| Log-Pearson III | 96.49 | 81.63 | 61.58–116.36 |
+
+![Q100 sensitivity to record length](docs/figures/record_length_q100.png)
+
+The extended record materially reduces upper-tail uncertainty and moderates the
+GEV and Log-Pearson III Q100 estimates. Nevertheless, the NRFA classification
+places Murrayfield in **suitable for pooling**, not **suitable for QMED**. The
+reported at-site statistics are therefore diagnostic estimates, not endorsed
+design flows.
+
 ## Relation to UK FEH practice
 
 This is an **independent at-site statistical analysis informed by UK flood
@@ -76,6 +111,9 @@ donor adjustment, pooling groups, hydrological similarity, catchment descriptors
 rating quality and other local evidence. The open estimates here provide a
 transparent baseline for a future comparison if appropriately licensed FEH
 results become available.
+
+Acknowledgement: Data from the UK National River Flow Archive, Peak Flow
+Dataset version 15.
 
 ## Reproduce the analysis
 
@@ -120,4 +158,3 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
 
 The analysis code is released under the MIT License. Source hydrometric data
 retain their original Open Government Licence and attribution requirements.
-

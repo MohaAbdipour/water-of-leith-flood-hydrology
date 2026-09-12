@@ -1,6 +1,8 @@
 import pandas as pd
+from pathlib import Path
 
 from water_of_leith.frequency import annual_maxima, empirical_return_periods, validate_series
+from water_of_leith.nrfa import read_nrfa_am
 
 
 def test_complete_water_year_and_peak_are_extracted():
@@ -36,3 +38,15 @@ def test_validation_rejects_duplicate_timestamps():
         return
     raise AssertionError("duplicate timestamps should fail validation")
 
+
+def test_nrfa_parser_marks_rejected_year(tmp_path: Path):
+    source = tmp_path / "station.am"
+    source.write_text(
+        "[AM Rejected]\n2020,2020\n[END]\n[AM Values]\n"
+        "2020-01-02 00:00:00Z,10.500,1.200\n"
+        "2020-11-03 00:00:00Z,12.000,1.300\n[END]\n"
+    )
+    values, rejected = read_nrfa_am(source)
+    assert rejected == {2020}
+    assert values["water_year"].tolist() == [2020, 2021]
+    assert values["accepted"].tolist() == [False, True]
