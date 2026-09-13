@@ -12,3 +12,9 @@ minimum_elevation_m,37.9
 median_elevation_m,227.5
 maximum_elevation_m,563.1
 mapped_river_segments,108
+built_up_area_km2,30.47
+built_up_fraction_percent,27.07
+mapped_named_reservoirs,3
+harperrig_reservoir_area_km2,0.876
+threipmuir_reservoir_area_km2,0.546
+harlaw_reservoir_area_km2,0.118

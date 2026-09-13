@@ -131,10 +131,23 @@ def main() -> None:
         bbox=basin.bounds,
     )
     rivers = gpd.clip(rivers, basin_gdf)
+    built_up = gpd.read_file(
+        cache / "built_up_areas/os_open_built_up_areas.gpkg",
+        layer="os_open_built_up_areas",
+        bbox=basin.bounds,
+    )
+    built_up = gpd.clip(built_up, basin_gdf)
+    reservoirs = gpd.read_file(cache / "osm_named_reservoirs.geojson").to_crs("EPSG:27700")
+    reservoirs = gpd.clip(reservoirs, basin_gdf)
 
     valid_elevation = dem[catchment & np.isfinite(dem)]
     derived_area = cell_area_km2(catchment, CELL_SIZE)
     snap_distance = math.hypot(snapped_e - OUTLET_E, snapped_n - OUTLET_N)
+    built_up_area = float(built_up.geometry.area.sum() / 1_000_000)
+    reservoir_areas = {
+        row["name"]: float(row.geometry.area / 1_000_000)
+        for _, row in reservoirs.iterrows()
+    }
     summary = {
         "station": "Water of Leith at Murrayfield (NRFA 19006)",
         "outlet_easting_m": f"{OUTLET_E:.1f}",
@@ -149,7 +162,12 @@ def main() -> None:
         "median_elevation_m": f"{np.median(valid_elevation):.1f}",
         "maximum_elevation_m": f"{np.max(valid_elevation):.1f}",
         "mapped_river_segments": str(len(rivers)),
+        "built_up_area_km2": f"{built_up_area:.2f}",
+        "built_up_fraction_percent": f"{100 * built_up_area / derived_area:.2f}",
+        "mapped_named_reservoirs": str(len(reservoirs)),
     }
+    for name, area in reservoir_areas.items():
+        summary[f"{name.lower().replace(' ', '_')}_area_km2"] = f"{area:.3f}"
     with (outputs / "gis_catchment_summary.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle)
         writer.writerow(["metric", "value"])
@@ -161,14 +179,34 @@ def main() -> None:
     extent = (bounds.left, bounds.right, bounds.bottom, bounds.top)
     ax.imshow(shade, extent=extent, origin="upper", cmap="gray", alpha=0.42)
     terrain = ax.imshow(masked_dem, extent=extent, origin="upper", cmap="terrain", alpha=0.78)
+    built_up.plot(
+        ax=ax, facecolor="#6f6f6f", edgecolor="none", alpha=0.28, hatch="////"
+    )
     basin_gdf.boundary.plot(ax=ax, color="#6b3f1d", linewidth=1.7)
     rivers.plot(ax=ax, color="#207bb5", linewidth=0.8, alpha=0.9)
-    named = rivers.dropna(subset=["watercourse_name"])
-    for name in ["Water of Leith", "Bavelaw Burn", "Bonaly Burn", "Kinleith Burn"]:
-        selection = named[named["watercourse_name"] == name]
-        if not selection.empty:
-            point = selection.geometry.iloc[0].interpolate(0.5, normalized=True)
-            ax.annotate(name, (point.x, point.y), fontsize=7.5, color="#16445f")
+    reservoirs.plot(
+        ax=ax, facecolor="#36b9d6", edgecolor="#075985", linewidth=0.8, zorder=5
+    )
+    label_offsets = {
+        "Harperrig Reservoir": (0, 11),
+        "Harlaw Reservoir": (18, 10),
+        "Threipmuir Reservoir": (18, -13),
+    }
+    for _, reservoir in reservoirs.iterrows():
+        point = reservoir.geometry.representative_point()
+        x_offset, y_offset = label_offsets[reservoir["name"]]
+        ax.annotate(
+            reservoir["name"].replace(" Reservoir", ""),
+            (point.x, point.y),
+            xytext=(x_offset, y_offset),
+            textcoords="offset points",
+            fontsize=7.5,
+            color="#064e62",
+            fontweight="bold",
+            ha="center",
+            zorder=7,
+            bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.65, "pad": 1},
+        )
     ax.scatter(OUTLET_E, OUTLET_N, marker="^", s=75, color="#b2182b", edgecolor="white", zorder=6)
     ax.annotate("Murrayfield gauge", (OUTLET_E, OUTLET_N), xytext=(7, 6), textcoords="offset points", fontsize=8.5)
     minx, miny, maxx, maxy = basin.bounds
@@ -196,6 +234,8 @@ def main() -> None:
         handles=[
             Line2D([0], [0], color="#6b3f1d", lw=1.7, label="DEM-derived divide"),
             Line2D([0], [0], color="#207bb5", lw=1.2, label="OS Open Rivers"),
+            Line2D([0], [0], color="#6f6f6f", lw=5, alpha=0.4, label="OS built-up area"),
+            Line2D([0], [0], color="#075985", lw=5, label="Named reservoir (OSM)"),
             Line2D([0], [0], marker="^", color="none", markerfacecolor="#b2182b", markeredgecolor="white", markersize=8, label="NRFA gauge"),
         ],
         loc="lower left",
@@ -207,7 +247,7 @@ def main() -> None:
     fig.text(
         0.5,
         0.003,
-        "Terrain: Copernicus GLO-30. Rivers: OS Open Rivers. Boundary independently derived from terrain; it is not the NRFA polygon.",
+        "Terrain and built-up areas: Copernicus GLO-30 and OS OpenData. Reservoirs: OpenStreetMap contributors (ODbL). Divide is not the NRFA polygon.",
         ha="center",
         fontsize=7.5,
     )

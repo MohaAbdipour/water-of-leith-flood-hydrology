@@ -44,12 +44,16 @@ retrieved from the official public cloud store, reduced to the station 19006
 catchment and kept outside version control. The source catchment boundary is
 used for spatial selection but is not redistributed.
 
-The GIS analysis uses the 30 m **Copernicus DEM GLO-30** and **OS Open Rivers**.
-Both are downloaded from their official public distributions. The river data
-are OS OpenData under the Open Government Licence; contains OS data © Crown
-copyright and database right 2026. The terrain-derived divide shown here is an
-independent analytical result, not a copy or derivative of the restricted NRFA
-catchment polygon.
+The GIS analysis uses the 30 m [Copernicus DEM GLO-30](https://registry.opendata.aws/copernicus-dem/)
+and [OS Open Rivers](https://osdatahub.os.uk/data/downloads/open/OpenRivers).
+[OS Open Built Up Areas](https://osdatahub.os.uk/downloads/open/BuiltUpAreas)
+provides the urban extent, while three named reservoir polygons are retrieved
+from [OpenStreetMap](https://www.openstreetmap.org/copyright). The OS products
+are OpenData under the Open Government Licence; contains OS data © Crown
+copyright and database right 2026. OpenStreetMap data are © OpenStreetMap
+contributors and available under the Open Database Licence. The terrain-derived
+divide shown here is an independent analytical result, not a copy or derivative
+of the restricted NRFA catchment polygon.
 
 ## Analytical workflow
 
@@ -128,7 +132,8 @@ quality indicators were calculated for each event in the 1992–2016 overlap.
 Copernicus GLO-30 elevation was projected to British National Grid at 30 m,
 hydrologically conditioned, and delineated from the published station location.
 OS Open Rivers was burned 10 m into the surface to reconnect channels interrupted
-by bridges and urban surface features, then clipped to the independently derived
+by bridges and urban surface features. The river network, OS built-up extents and
+three named reservoir polygons were then clipped to the independently derived
 watershed. This produced a reproducible topographic context without publishing
 the licence-restricted NRFA boundary geometry.
 
@@ -466,7 +471,10 @@ The mapped outlet is 33 m from the published Murrayfield coordinate after
 snapping to the conditioned drainage grid. The independently delineated area is
 **112.56 km²**, 5.20% larger than NRFA's rounded published value of 107 km².
 Catchment elevations range from 37.9 to 563.1 m, with a median of 227.5 m, and
-108 OS Open Rivers segments intersect the derived watershed.
+108 OS Open Rivers segments intersect the derived watershed. OS built-up
+polygons occupy **30.47 km² (27.07%)** of the derived basin. The mapped surface
+areas of Harperrig, Threipmuir and Harlaw reservoirs are approximately 0.876,
+0.546 and 0.118 km², respectively.
 
 The area difference is a diagnostic of DEM resolution, stream burning, outlet
 location and topographic conditioning; it is not evidence that the NRFA area is
@@ -521,12 +529,12 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
 
 ## Next analyses
 
-1. Add openly licensed reservoir and urban-land-cover layers if sources with
-   adequate scale, provenance and redistribution terms are identified.
-2. Compare the transparent estimates with legitimately obtained FEH results,
+1. Compare the transparent estimates with legitimately obtained FEH results,
    without redistributing licensed inputs.
-3. Evaluate predictive models only after defining a leakage-safe temporal
+2. Evaluate predictive models only after defining a leakage-safe temporal
    validation design and physically interpretable predictor set.
+3. Test whether event timing and magnitude vary systematically with season and
+   antecedent catchment wetness using open observations.
 
 ## Software licence
 
