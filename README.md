@@ -35,8 +35,8 @@ record length materially affect rare-flood estimates, while rating history,
 reservoir regulation and urban drainage remain unresolved sources of physical
 uncertainty. Rainfall magnitude is associated with event flow, but a model
 adding antecedent-rainfall and seasonal terms has no out-of-time predictive
-advantage. Results are therefore presented as reproducible scientific
-diagnostics, not engineering design values.
+advantage. The results quantify the evidence available from the observed record
+and its limitations; they are not engineering design values.
 
 ```mermaid
 flowchart LR
@@ -542,7 +542,7 @@ location and topographic conditioning; it is not evidence that the NRFA area is
 incorrect. In particular, an urban catchment divide need not follow surface
 topography where sewers, culverts and artificial drainage transfer water. The
 figure therefore supports spatial interpretation but is not suitable for formal
-FEH descriptor calculation. Reproducibility metrics are retained in
+FEH descriptor calculation. Spatial diagnostics are retained in
 `outputs/gis_catchment_summary.csv`; no catchment geometry is distributed.
 
 Copernicus attribution: produced using Copernicus WorldDEM-30 © DLR e.V.
@@ -616,7 +616,7 @@ formal FEH pooling or design-flow evidence. Full station metrics and common-year
 maxima are in `outputs/regional_station_comparison.csv` and
 `outputs/regional_common_annual_maxima.csv`.
 
-## Reproduce the analysis
+## Run the analysis
 
 To download the open inputs, regenerate every public result in dependency order
 and run the tests:
@@ -676,7 +676,7 @@ summaries to `outputs/`, and regenerates the scientific figures in
 ## Optional extensions
 
 The study is complete within its open-data scope. The following extensions are
-deliberately outside the current evidence base and are not required to reproduce
+deliberately outside the current evidence base and are not required to support
 or interpret the reported results:
 
 1. Compare the transparent estimates with legitimately obtained FEH results,
