@@ -43,6 +43,7 @@ def main() -> None:
         print(f"\n>>> {script}", flush=True)
         subprocess.run([sys.executable, script], check=True)
     subprocess.run([sys.executable, "-m", "pytest", "-q"], check=True)
+    subprocess.run([sys.executable, "scripts/audit_repository.py"], check=True)
     print("\nPublic workflow completed. Restricted NRFA validation was not run.")
 
 

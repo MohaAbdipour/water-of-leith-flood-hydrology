@@ -16,7 +16,51 @@ works have affected the stage–discharge relation.
 
 ![Terrain-derived catchment and drainage network](docs/figures/catchment_gis_context.png)
 
+## Study at a glance
+
+| Quantity | Result |
+|---|---:|
+| Open discharge record | 1992–2023 at 15-minute resolution |
+| Complete annual-maximum series | 31 water years (1993–2023) |
+| At-site open-record QMED | 30.41 m³/s |
+| Largest open-record flood | 88.08 m³/s on 26 April 2000 |
+| Open-record Q100 range across fitted models | 73.92–102.20 m³/s |
+| Rainfall-linked independent events | 79 |
+| Autumn–winter share of linked events | 70.9% |
+| Terrain-derived area / published NRFA area | 112.56 / 107 km² |
+| Regional specific QMED | 279.3 L s⁻¹ km⁻² |
+
+The principal result is not a single design-flow number. Model choice and
+record length materially affect rare-flood estimates, while rating history,
+reservoir regulation and urban drainage remain unresolved sources of physical
+uncertainty. Rainfall magnitude is associated with event flow, but a model
+adding antecedent-rainfall and seasonal terms has no out-of-time predictive
+advantage. Results are therefore presented as reproducible scientific
+diagnostics, not engineering design values.
+
+```mermaid
+flowchart LR
+    A[UK-Flow15 discharge] --> D[Hydrometric QA]
+    B[CEH-GEAR1hr rainfall] --> E[Rainfall-linked events]
+    C[Open terrain and mapping] --> F[GIS context]
+    D --> G[Annual maxima and POT]
+    G --> H[Frequency and uncertainty]
+    E --> I[Storm response and seasonality]
+    A --> J[Regional comparison]
+    K[Local NRFA archive<br/>optional and restricted] -.-> L[Summary-only validation]
+    G --> L
+```
+
 ## Data
+
+| Source | Role | Licence or access status | Repository handling |
+|---|---|---|---|
+| UK-Flow15 | Target and regional sub-hourly discharge | Open Government Licence | Raw station files downloaded locally and ignored |
+| CEH-GEAR1hr v2 | Hourly catchment rainfall | Open Government Licence v3 | Extracted hourly series ignored; derived event tables retained |
+| Copernicus GLO-30 | Terrain and watershed delineation | Copernicus DEM terms | Raster cached locally and ignored |
+| OS Open Rivers and Built Up Areas | Drainage and urban context | Open Government Licence | Source packages cached locally and ignored |
+| OpenStreetMap | Named reservoir polygons | Open Database Licence | Retrieved geometry cached locally; attributed map retained |
+| NRFA Peak Flow archive and catchment boundary | Optional local validation and spatial extraction | Restricted source terms; not open redistribution | Row-level archive and boundary geometry never committed |
 
 The analysis uses **UK-Flow15**, an openly licensed, quality-controlled national
 archive of sub-hourly discharge:
@@ -610,8 +654,9 @@ python scripts/validate_against_nrfa.py
 pytest
 ```
 
-The analysis writes QA diagnostics, annual maxima and fitted return levels to
-`outputs/`, and regenerates both figures in `docs/figures/`.
+The analysis writes QA diagnostics, event tables, model results and validation
+summaries to `outputs/`, and regenerates the scientific figures in
+`docs/figures/`.
 
 ## Scientific limitations
 
@@ -628,7 +673,11 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
 - Results must not be used for engineering design, planning decisions or
   operational flood management.
 
-## Next analyses
+## Optional extensions
+
+The study is complete within its open-data scope. The following extensions are
+deliberately outside the current evidence base and are not required to reproduce
+or interpret the reported results:
 
 1. Compare the transparent estimates with legitimately obtained FEH results,
    without redistributing licensed inputs.
