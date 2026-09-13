@@ -7,6 +7,13 @@ import pandas as pd
 from scipy.signal import find_peaks
 
 
+def classification_agreement(reference: pd.Series, candidate: pd.Series) -> float:
+    """Return the fraction of paired categorical labels that agree exactly."""
+    if len(reference) != len(candidate):
+        raise ValueError("Classification series must have equal lengths")
+    return float((reference.to_numpy() == candidate.to_numpy()).mean())
+
+
 def cumulative_rainfall_duration(rainfall: pd.Series, lower: float = 0.1, upper: float = 0.9) -> float:
     """Hours between the lower and upper cumulative-rainfall fractions."""
     values = rainfall.fillna(0).clip(lower=0).to_numpy(dtype=float)
@@ -18,7 +25,13 @@ def cumulative_rainfall_duration(rainfall: pd.Series, lower: float = 0.1, upper:
     return float(upper_index - lower_index)
 
 
-def count_event_peaks(series: pd.Series, smoothing_hours: int = 3, minimum_separation_hours: int = 6) -> int:
+def count_event_peaks(
+    series: pd.Series,
+    smoothing_hours: int = 3,
+    minimum_separation_hours: int = 6,
+    prominence_range_fraction: float = 0.1,
+    prominence_maximum_fraction: float = 0.05,
+) -> int:
     """Count prominent peaks after hourly smoothing.
 
     Prominence is the larger of 10% of the smoothed range or 5% of its maximum,
@@ -26,7 +39,11 @@ def count_event_peaks(series: pd.Series, smoothing_hours: int = 3, minimum_separ
     """
     values = series.astype(float).interpolate(limit_direction="both")
     smoothed = values.rolling(smoothing_hours, center=True, min_periods=1).mean().to_numpy()
-    prominence = max(0.1 * np.ptp(smoothed), 0.05 * np.max(smoothed), 1e-9)
+    prominence = max(
+        prominence_range_fraction * np.ptp(smoothed),
+        prominence_maximum_fraction * np.max(smoothed),
+        1e-9,
+    )
     peaks, _ = find_peaks(smoothed, prominence=prominence, distance=minimum_separation_hours)
     return int(len(peaks))
 
@@ -68,10 +85,16 @@ def recession_half_time(flow: pd.Series, peak_time: pd.Timestamp) -> float:
     return float((candidates[0] - pd.Timestamp(peak_time)) / pd.Timedelta(hours=1))
 
 
-def duration_class(duration_10_90_hours: float) -> str:
+def duration_class(
+    duration_10_90_hours: float,
+    concentrated_limit: float = 12,
+    prolonged_limit: float = 36,
+) -> str:
     """Classify rainfall concentration using explicit D10–90 boundaries."""
-    if duration_10_90_hours <= 12:
-        return "concentrated (≤12 h)"
-    if duration_10_90_hours <= 36:
-        return "intermediate (12–36 h)"
-    return "prolonged (>36 h)"
+    if concentrated_limit >= prolonged_limit:
+        raise ValueError("The concentrated limit must be below the prolonged limit")
+    if duration_10_90_hours <= concentrated_limit:
+        return "concentrated"
+    if duration_10_90_hours <= prolonged_limit:
+        return "intermediate"
+    return "prolonged"

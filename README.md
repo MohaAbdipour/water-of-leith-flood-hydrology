@@ -411,6 +411,32 @@ Event-level descriptors and grouped summaries are in
 `outputs/flood_event_classification.csv` and
 `outputs/flood_event_class_summary.csv`.
 
+### Classification sensitivity
+
+The descriptive classes were recomputed across nine duration-boundary pairs
+(9–15 hours and 30–42 hours) and 36 peak-detection settings combining 1–5 hour
+smoothing, 4–12 hour minimum separation and 7.5–15% range prominence. These
+ranges deliberately include materially more and less permissive definitions
+than the baseline rather than making negligible numerical perturbations.
+
+![Event-classification sensitivity](docs/figures/event_classification_sensitivity.png)
+
+Scenario-level agreement with the baseline ranges from 81.0–100% for storm
+duration, 78.5–100% for rainfall structure and 81.0–100% for hydrograph
+structure. Median event-level stability is 1.00 for all three descriptors, but
+22 events change duration class and 25 change rainfall or hydrograph structure
+under at least one setting. The duration counts range from 7–12 concentrated,
+15–37 intermediate and 35–52 prolonged events; single-burst and single-peak
+counts range from 3–26 and 27–52, respectively.
+
+The broad conclusions are therefore robust—prolonged and multi-burst rainfall
+remains common, and both single- and multi-peak hydrographs occur—but exact
+event labels and group totals are parameter-dependent. These classes should be
+used as sensitivity-aware descriptors, not fixed physical populations or
+unqualified predictors. Scenario and event-level results are retained in
+`outputs/event_classification_sensitivity.csv` and
+`outputs/event_classification_event_stability.csv`.
+
 ## Sensitivity to the 2016–2017 rating transition
 
 The Murrayfield station history identifies flood-defence works and channel
@@ -465,6 +491,8 @@ python scripts/run_analysis.py
 python scripts/run_pot_analysis.py
 python scripts/run_diagnostics.py
 python scripts/run_rating_sensitivity.py
+python scripts/run_event_classification.py
+python scripts/run_event_classification_sensitivity.py
 pip install -e ".[gis]"
 python scripts/download_gis_data.py
 python scripts/run_gis_analysis.py
@@ -493,12 +521,12 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
 
 ## Next analyses
 
-1. Test the stability of event classes to peak-prominence and duration
-   thresholds before using them in any predictive model.
-2. Add openly licensed reservoir and urban-land-cover layers if sources with
+1. Add openly licensed reservoir and urban-land-cover layers if sources with
    adequate scale, provenance and redistribution terms are identified.
-3. Compare the transparent estimates with legitimately obtained FEH results,
+2. Compare the transparent estimates with legitimately obtained FEH results,
    without redistributing licensed inputs.
+3. Evaluate predictive models only after defining a leakage-safe temporal
+   validation design and physically interpretable predictor set.
 
 ## Software licence
 
