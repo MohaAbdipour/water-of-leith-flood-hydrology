@@ -137,6 +137,15 @@ three named reservoir polygons were then clipped to the independently derived
 watershed. This produced a reproducible topographic context without publishing
 the licence-restricted NRFA boundary geometry.
 
+### 13. Flood seasonality and antecedent wetness
+
+Event timing was analysed on the October–September water-year circle. Rainfall
+accumulated over 7, 14 and 30 days ending immediately before the 72-hour storm
+window was used as a reproducible proxy for catchment wetness. Marginal and
+storm-rainfall-adjusted associations, bootstrap intervals and expanding-window
+chronological validation were used to distinguish description from predictive
+skill.
+
 ## Record integrity
 
 The downloaded station file contains 1,107,420 observations from 1 June 1992 to
@@ -488,6 +497,44 @@ Copernicus attribution: produced using Copernicus WorldDEM-30 © DLR e.V.
 2010–2014 and © Airbus Defence and Space GmbH 2014–2018 provided under
 COPERNICUS by the European Union and ESA; all rights reserved.
 
+## Flood seasonality and antecedent wetness
+
+The 79 rainfall-linked floods are seasonally concentrated: 56 events (70.9%)
+occur in autumn or winter. Circular analysis gives a mean timing of **8
+December**, a mean resultant length of 0.387 and Rayleigh p = 4.73 × 10⁻⁶.
+This establishes non-uniform event timing, although it does not imply that every
+large flood follows the mean seasonal pattern.
+
+![Flood seasonality and antecedent wetness](docs/figures/seasonality_antecedent_wetness.png)
+
+Pre-storm rainfall is not strongly associated with peak magnitude in this
+sample. Spearman correlations are 0.071, −0.005 and 0.152 for the 7-, 14- and
+30-day windows. After controlling for 72-hour event rainfall, the corresponding
+partial rank correlations are 0.079, 0.089 and 0.196. Every bootstrap 95%
+interval includes zero; for the 30-day adjusted association the interval is
+−0.011 to 0.394.
+
+| Chronologically validated model | Test events | MAE (m³/s) | RMSE (m³/s) | R² |
+|---|---:|---:|---:|---:|
+| Expanding-training mean | 50 | 5.74 | 6.79 | −0.151 |
+| 72-hour rainfall | 50 | 5.61 | 7.32 | −0.335 |
+| Rainfall + 14-day wetness + season | 50 | 6.31 | 8.20 | −0.676 |
+
+The full model does not outperform the simpler baselines out of time. Its
+14-day wetness coefficient is 0.028 on the log-flow scale, with a bootstrap 95%
+interval from −0.072 to 0.131. Negative validation R² values show that none of
+the models improves on the evaluation-period mean in squared-error terms. The
+model is therefore retained as a transparent negative result, not promoted as a
+forecasting system.
+
+Antecedent rainfall is only a proxy for wetness; evapotranspiration, soil
+storage, snow, reservoir operation and sewer transfers are not observed. The
+72-hour total also extends to the flow peak, so this is an event-response
+diagnostic rather than a real-time forecast. Event data, seasonal summaries,
+bootstrap coefficients and chronological predictions are retained in
+`outputs/seasonality_wetness_events.csv`, `outputs/seasonal_flood_summary.csv`,
+`outputs/wetness_window_sensitivity.csv` and `outputs/seasonality_model_validation.csv`.
+
 ## Reproduce the analysis
 
 ```bash
@@ -501,6 +548,7 @@ python scripts/run_diagnostics.py
 python scripts/run_rating_sensitivity.py
 python scripts/run_event_classification.py
 python scripts/run_event_classification_sensitivity.py
+python scripts/run_seasonality_wetness.py
 pip install -e ".[gis]"
 python scripts/download_gis_data.py
 python scripts/run_gis_analysis.py
@@ -533,8 +581,8 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
    without redistributing licensed inputs.
 2. Evaluate predictive models only after defining a leakage-safe temporal
    validation design and physically interpretable predictor set.
-3. Test whether event timing and magnitude vary systematically with season and
-   antecedent catchment wetness using open observations.
+3. Add regional context from nearby open UK-Flow15 stations while maintaining
+   hydrometric comparability and avoiding restricted pooling-group data.
 
 ## Software licence
 

@@ -1,0 +1,5 @@
+season,events,median_peak_flow_m3s,lower_quartile_peak_flow_m3s,upper_quartile_peak_flow_m3s,median_rainfall_72h_mm,median_antecedent_14d_mm
+autumn,23,25.787,21.427500000000002,33.334,36.733,41.179
+winter,33,22.244,19.731,24.874,31.76,53.405
+spring,9,20.096,19.22,29.665,32.611999999999995,27.576
+summer,14,25.0815,20.50875,26.900000000000002,41.266999999999996,59.4735
