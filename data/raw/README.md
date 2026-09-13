@@ -16,6 +16,14 @@ DOI: https://doi.org/10.5285/211710ac-f01b-4b52-807f-373babb1c368
 Licence: Open Government Licence. Users must review the catalogue record and
 cite the dataset. Station `019006` is Water of Leith at Murrayfield.
 
+## Regional comparison records
+
+`download_regional_ukflow15.py` selects six nearby stations from the same open
+catalogue using explicit distance, catchment-area, record-span and missingness
+criteria, then downloads their sub-hourly records to the gitignored
+`data/raw/regional/` directory. The selected stations are a geographic
+comparison set and are not represented as an FEH pooling group.
+
 ## Hourly rainfall
 
 Catchment-mean rainfall is extracted on demand from **CEH-GEAR1hr v2** with:

@@ -146,6 +146,14 @@ storm-rainfall-adjusted associations, bootstrap intervals and expanding-window
 chronological validation were used to distinguish description from predictive
 skill.
 
+### 14. Regional open-data comparison
+
+Six comparison gauges were selected directly from UK-Flow15 metadata using
+predeclared geographic and record criteria: within 30 km of Murrayfield,
+catchment area 30–300 km², record starting by 2000 and extending through 2023,
+and catalogue missingness no greater than 1%. The six nearest eligible stations
+were retained. This is a reproducible comparison set, not an FEH pooling group.
+
 ## Record integrity
 
 The downloaded station file contains 1,107,420 observations from 1 June 1992 to
@@ -537,6 +545,33 @@ bootstrap coefficients and chronological predictions are retained in
 `outputs/seasonality_wetness_events.csv`, `outputs/seasonal_flood_summary.csv`,
 `outputs/wetness_window_sensitivity.csv` and `outputs/seasonality_model_validation.csv`.
 
+## Regional high-flow context
+
+The regional comparison uses 30 common complete water years (1994–2023) for
+Murrayfield and six nearby UK-Flow15 stations: Water of Leith at Colinton, Gogar
+Burn at Turnhouse, North Esk at Dalmore Weir, South Esk at Cowbridge, Almond at
+Almondell and Tyne at Spilmersford. The comparison deliberately includes the
+nested upstream Water of Leith gauge and neighbouring catchments with different
+areas; no claim of hydrological homogeneity is made.
+
+![Regional high-flow comparison](docs/figures/regional_flow_comparison.png)
+
+Murrayfield's common-period QMED is 29.884 m³/s, equivalent to **279.3 L s⁻¹
+km⁻²**. This lies within the regional range of 237.4–407.7 L s⁻¹ km⁻². Its
+annual-maximum coefficient of variation is 0.422, compared with 0.277–0.520
+across the comparison set. Station-specific 99.7th-percentile POT series place
+mean high-flow timing between 21 November and 13 December at every gauge, with
+2.25–3.53 independent events per record-year.
+
+The shared winter timing supports a regional climatic influence, whereas the
+spread in specific QMED and variability indicates meaningful catchment and
+gauging differences. Area-normalisation does not remove effects of urbanisation,
+geology, reservoirs, channel controls or rating quality. Consequently, these
+open-data comparisons provide context but must not be treated as donor transfer,
+formal FEH pooling or design-flow evidence. Full station metrics and common-year
+maxima are in `outputs/regional_station_comparison.csv` and
+`outputs/regional_common_annual_maxima.csv`.
+
 ## Reproduce the analysis
 
 ```bash
@@ -551,6 +586,8 @@ python scripts/run_rating_sensitivity.py
 python scripts/run_event_classification.py
 python scripts/run_event_classification_sensitivity.py
 python scripts/run_seasonality_wetness.py
+python scripts/download_regional_ukflow15.py
+python scripts/run_regional_comparison.py
 pip install -e ".[gis]"
 python scripts/download_gis_data.py
 python scripts/run_gis_analysis.py
@@ -583,8 +620,8 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
    without redistributing licensed inputs.
 2. Evaluate predictive models only after defining a leakage-safe temporal
    validation design and physically interpretable predictor set.
-3. Add regional context from nearby open UK-Flow15 stations while maintaining
-   hydrometric comparability and avoiding restricted pooling-group data.
+3. Assess climate covariates with an openly licensed gridded temperature and
+   rainfall dataset, retaining chronological validation and physical interpretation.
 
 ## Software licence
 

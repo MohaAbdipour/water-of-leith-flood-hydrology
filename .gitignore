@@ -6,5 +6,6 @@ __pycache__/
 *.egg-info/
 data/raw/*.csv
 !data/raw/README.md
+data/raw/regional/
 data/cache/
 data/restricted/
