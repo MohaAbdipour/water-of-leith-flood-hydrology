@@ -38,17 +38,56 @@ adding antecedent-rainfall and seasonal terms has no out-of-time predictive
 advantage. The results quantify the evidence available from the observed record
 and its limitations; they are not engineering design values.
 
+## Study design
+
 ```mermaid
-flowchart LR
-    A[UK-Flow15 discharge] --> D[Hydrometric QA]
-    B[CEH-GEAR1hr rainfall] --> E[Rainfall-linked events]
-    C[Open terrain and mapping] --> F[GIS context]
-    D --> G[Annual maxima and POT]
-    G --> H[Frequency and uncertainty]
-    E --> I[Storm response and seasonality]
-    A --> J[Regional comparison]
-    K[Local NRFA archive<br/>optional and restricted] -.-> L[Summary-only validation]
-    G --> L
+flowchart TB
+    subgraph DATA[Observed and spatial data]
+        A[UK-Flow15<br/>15-minute discharge]
+        B[CEH-GEAR1hr<br/>hourly rainfall]
+        C[Copernicus DEM, OS OpenData<br/>and OpenStreetMap]
+        D[Nearby UK-Flow15 gauges]
+    end
+
+    subgraph PROCESS[Data preparation and quality assessment]
+        E[Completeness, quality codes<br/>and rating-history review]
+        F[Catchment rainfall extraction<br/>and flood-event linkage]
+        G[Terrain conditioning, watershed<br/>and drainage delineation]
+        H[Common-period regional series]
+    end
+
+    subgraph ANALYSIS[Hydrological analyses]
+        I[Annual maxima and QMED]
+        J[Peaks over threshold<br/>and declustering]
+        K[Rainfall-response timing,<br/>seasonality and antecedent wetness]
+        L[Regional specific-flow context]
+        M[Catchment terrain,<br/>urban extent and reservoirs]
+    end
+
+    subgraph EVIDENCE[Statistical evidence and interpretation]
+        N[GEV, Gumbel and<br/>Log-Pearson III comparison]
+        O[GPD frequency analysis]
+        P[Bootstrap uncertainty,<br/>sensitivity and diagnostics]
+        Q[Physical interpretation,<br/>limitations and UK practice]
+    end
+
+    A --> E
+    B --> F
+    C --> G
+    D --> H
+    E --> I
+    E --> J
+    F --> K
+    G --> M
+    H --> L
+    I --> N
+    J --> O
+    N --> P
+    O --> P
+    K --> Q
+    L --> Q
+    M --> Q
+    P --> Q
 ```
 
 ## Data
@@ -673,11 +712,22 @@ summaries to `outputs/`, and regenerates the scientific figures in
 - Results must not be used for engineering design, planning decisions or
   operational flood management.
 
-## Optional extensions
+## Future research directions
 
 The study is complete within its open-data scope. The following extensions are
 deliberately outside the current evidence base and are not required to support
 or interpret the reported results:
+
+```mermaid
+flowchart LR
+    A[Current study<br/>complete within its<br/>open-data scope]
+    A -.-> B[Benchmark against legitimately<br/>obtained FEH estimates]
+    A -.-> C[Develop physically informed models<br/>with leakage-safe validation]
+    A -.-> D[Assess climatic covariates<br/>using open gridded datasets]
+    B --> E[Extended evidence base]
+    C --> E
+    D --> E
+```
 
 1. Compare the transparent estimates with legitimately obtained FEH results,
    without redistributing licensed inputs.
