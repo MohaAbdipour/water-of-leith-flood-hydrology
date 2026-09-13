@@ -505,7 +505,7 @@ December**, a mean resultant length of 0.387 and Rayleigh p = 4.73 × 10⁻⁶.
 This establishes non-uniform event timing, although it does not imply that every
 large flood follows the mean seasonal pattern.
 
-![Flood seasonality and antecedent wetness](docs/figures/seasonality_antecedent_wetness.png)
+![Circular flood seasonality and seasonal peak-flow distributions](docs/figures/flood_seasonality_diagnostics.png)
 
 Pre-storm rainfall is not strongly associated with peak magnitude in this
 sample. Spearman correlations are 0.071, −0.005 and 0.152 for the 7-, 14- and
@@ -513,6 +513,8 @@ sample. Spearman correlations are 0.071, −0.005 and 0.152 for the 7-, 14- and
 partial rank correlations are 0.079, 0.089 and 0.196. Every bootstrap 95%
 interval includes zero; for the 30-day adjusted association the interval is
 −0.011 to 0.394.
+
+![Wetness uncertainty and chronological model validation](docs/figures/wetness_model_diagnostics.png)
 
 | Chronologically validated model | Test events | MAE (m³/s) | RMSE (m³/s) | R² |
 |---|---:|---:|---:|---:|

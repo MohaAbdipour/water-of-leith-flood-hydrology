@@ -254,6 +254,150 @@ def main() -> None:
     fig.savefig(figures / "seasonality_antecedent_wetness.png", dpi=200)
     plt.close(fig)
 
+    # Circular timing and seasonal magnitude are separated from the wetness
+    # diagnostics so that timing concentration is not implied by a linear axis.
+    season_colours = {
+        "autumn": "#c76d1d",
+        "winter": "#3977a8",
+        "spring": "#4d9b64",
+        "summer": "#d8aa24",
+    }
+    figure = plt.figure(figsize=(12, 5.4), constrained_layout=True)
+    polar_axis = figure.add_subplot(1, 2, 1, projection="polar")
+    box_axis = figure.add_subplot(1, 2, 2)
+    month_order = [10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    month_labels = ["Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"]
+    theta = np.arange(12) * 2 * np.pi / 12
+    ordered_counts = month_counts.reindex(month_order).to_numpy()
+    bar_colours = (
+        [season_colours["autumn"]] * 2
+        + [season_colours["winter"]] * 3
+        + [season_colours["spring"]] * 3
+        + [season_colours["summer"]] * 3
+        + [season_colours["autumn"]]
+    )
+    polar_axis.bar(
+        theta, ordered_counts, width=2 * np.pi / 12 * 0.88,
+        color=bar_colours, edgecolor="white", alpha=0.9,
+    )
+    polar_axis.set_theta_zero_location("N")
+    polar_axis.set_theta_direction(-1)
+    polar_axis.set_xticks(theta, month_labels)
+    polar_axis.set_title("Flood occurrence through the water year", pad=24, fontweight="bold")
+    polar_axis.annotate(
+        "",
+        xy=(mean_angle, max(ordered_counts) * concentration),
+        xytext=(mean_angle, 0),
+        arrowprops={"arrowstyle": "-|>", "color": "#8b1e3f", "lw": 2.3},
+    )
+    polar_axis.text(
+        0.03, -0.10,
+        f"Mean: {mean_date.strftime('%d %b')}  |  R̄ = {concentration:.3f}  |  Rayleigh p = {rayleigh_p:.2g}",
+        transform=polar_axis.transAxes, fontsize=9,
+    )
+
+    season_order = ["autumn", "winter", "spring", "summer"]
+    distributions = [
+        events.loc[events["season"] == season, "peak_flow_m3s"].to_numpy()
+        for season in season_order
+    ]
+    boxes = box_axis.boxplot(distributions, patch_artist=True, widths=0.55, showfliers=False)
+    for patch_box, season in zip(boxes["boxes"], season_order):
+        patch_box.set(facecolor=season_colours[season], alpha=0.45)
+    rng = np.random.default_rng(19006)
+    for position, (season, values) in enumerate(zip(season_order, distributions), start=1):
+        jitter = rng.normal(0, 0.045, len(values))
+        box_axis.scatter(
+            position + jitter, values, s=27, color=season_colours[season],
+            edgecolor="white", linewidth=0.4, alpha=0.85,
+        )
+    box_axis.set(
+        xticks=range(1, 5),
+        xticklabels=[season.title() for season in season_order],
+        ylabel="Peak flow (m³/s)",
+        ylim=(15, 98),
+    )
+    for position, values in enumerate(distributions, start=1):
+        box_axis.text(position, 94, f"n={len(values)}", ha="center", fontsize=9)
+    box_axis.set_title(
+        "Flood magnitude by meteorological season", loc="left", fontweight="bold", pad=14
+    )
+    box_axis.grid(axis="y", alpha=0.25)
+    figure.savefig(figures / "flood_seasonality_diagnostics.png", dpi=220, bbox_inches="tight")
+    plt.close(figure)
+
+    # Association intervals and out-of-time predictions make the absence of
+    # predictive improvement visible, rather than reporting only fit statistics.
+    figure, axes = plt.subplots(1, 3, figsize=(15, 4.8), constrained_layout=True)
+    windows = sensitivity_frame["antecedent_window_days"].to_numpy()
+    for offset, estimate_column, lower_column, upper_column, label, colour in [
+        (-0.45, "spearman_rho_peak_flow", "spearman_bootstrap_lower_95", "spearman_bootstrap_upper_95", "Marginal", "#2878b5"),
+        (0.45, "partial_spearman_controlling_72h_rainfall", "partial_spearman_bootstrap_lower_95", "partial_spearman_bootstrap_upper_95", "Adjusted for 72 h rain", "#c54e3f"),
+    ]:
+        estimates = sensitivity_frame[estimate_column].to_numpy()
+        lower = sensitivity_frame[lower_column].to_numpy()
+        upper = sensitivity_frame[upper_column].to_numpy()
+        axes[0].errorbar(
+            windows + offset, estimates,
+            yerr=np.vstack([estimates - lower, upper - estimates]),
+            fmt="o", capsize=4, color=colour, label=label,
+        )
+    axes[0].axhline(0, color="0.35", linewidth=1, linestyle="--")
+    axes[0].set(
+        xticks=windows,
+        xlabel="Pre-storm wetness window (days)",
+        ylabel="Spearman correlation with peak flow",
+        title="Wetness-effect uncertainty",
+        ylim=(-0.35, 0.5),
+    )
+    axes[0].legend(fontsize=8)
+    axes[0].grid(alpha=0.22)
+
+    model_colours = {
+        "climatological mean": "#6b7280",
+        "72-hour rainfall": "#2878b5",
+        "rainfall + 14-day wetness + season": "#c54e3f",
+    }
+    short_labels = {
+        "climatological mean": "Training mean",
+        "72-hour rainfall": "72 h rainfall",
+        "rainfall + 14-day wetness + season": "Rain + wetness + season",
+    }
+    limits = [
+        min(predictions["observed_peak_flow_m3s"].min(), predictions["predicted_peak_flow_m3s"].min()) - 2,
+        max(predictions["observed_peak_flow_m3s"].max(), predictions["predicted_peak_flow_m3s"].max()) + 2,
+    ]
+    for model, group in predictions.groupby("model", sort=False):
+        axes[1].scatter(
+            group["observed_peak_flow_m3s"], group["predicted_peak_flow_m3s"],
+            s=24, alpha=0.62, color=model_colours[model], label=short_labels[model],
+        )
+    axes[1].plot(limits, limits, color="black", linestyle="--", linewidth=1, label="1:1")
+    axes[1].set(
+        xlim=limits, ylim=limits,
+        xlabel="Observed peak flow (m³/s)",
+        ylabel="Out-of-time prediction (m³/s)",
+        title="Chronological validation",
+    )
+    axes[1].legend(fontsize=7.5)
+    axes[1].grid(alpha=0.22)
+
+    x_positions = np.arange(len(metrics))
+    width = 0.36
+    axes[2].bar(x_positions - width / 2, metrics["mae_m3s"], width, label="MAE", color="#4c78a8")
+    axes[2].bar(x_positions + width / 2, metrics["rmse_m3s"], width, label="RMSE", color="#f28e2b")
+    axes[2].set(
+        xticks=x_positions,
+        xticklabels=[short_labels[model] for model in metrics["model"]],
+        ylabel="Validation error (m³/s)",
+        title="Out-of-time error",
+    )
+    axes[2].tick_params(axis="x", rotation=18)
+    axes[2].legend()
+    axes[2].grid(axis="y", alpha=0.22)
+    figure.savefig(figures / "wetness_model_diagnostics.png", dpi=220, bbox_inches="tight")
+    plt.close(figure)
+
     print(summary_rows)
     print(sensitivity_frame.to_string(index=False))
     print(metrics.to_string(index=False))
