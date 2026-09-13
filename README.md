@@ -574,6 +574,20 @@ maxima are in `outputs/regional_station_comparison.csv` and
 
 ## Reproduce the analysis
 
+To download the open inputs, regenerate every public result in dependency order
+and run the tests:
+
+```bash
+pip install -e ".[dev,rainfall,gis]"
+python scripts/run_public_pipeline.py
+```
+
+The public pipeline deliberately excludes `validate_against_nrfa.py`, which is
+optional and requires a separately obtained, locally held NRFA Peak Flow archive.
+If the open inputs are already present, add `--skip-downloads`.
+
+The equivalent individual commands are:
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
