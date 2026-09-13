@@ -14,6 +14,8 @@ combined sewer overflows, three headwater reservoirs and regulated runoff. The
 gauging record also requires care because hydraulic controls and flood-defence
 works have affected the stage–discharge relation.
 
+![Terrain-derived catchment and drainage network](docs/figures/catchment_gis_context.png)
+
 ## Data
 
 The analysis uses **UK-Flow15**, an openly licensed, quality-controlled national
@@ -41,6 +43,13 @@ Contains data supplied by UK Centre for Ecology & Hydrology. Raw rainfall is
 retrieved from the official public cloud store, reduced to the station 19006
 catchment and kept outside version control. The source catchment boundary is
 used for spatial selection but is not redistributed.
+
+The GIS analysis uses the 30 m **Copernicus DEM GLO-30** and **OS Open Rivers**.
+Both are downloaded from their official public distributions. The river data
+are OS OpenData under the Open Government Licence; contains OS data © Crown
+copyright and database right 2026. The terrain-derived divide shown here is an
+independent analytical result, not a copy or derivative of the restricted NRFA
+catchment polygon.
 
 ## Analytical workflow
 
@@ -113,6 +122,15 @@ CEH-GEAR1hr rainfall grid centres inside the station 19006 catchment were
 averaged hourly and aligned with independent POT peaks. Antecedent 24-, 48- and
 72-hour totals, maximum hourly rainfall, rainfall-to-flow timing and source-data
 quality indicators were calculated for each event in the 1992–2016 overlap.
+
+### 12. Terrain and drainage analysis
+
+Copernicus GLO-30 elevation was projected to British National Grid at 30 m,
+hydrologically conditioned, and delineated from the published station location.
+OS Open Rivers was burned 10 m into the surface to reconnect channels interrupted
+by bridges and urban surface features, then clipped to the independently derived
+watershed. This produced a reproducible topographic context without publishing
+the licence-restricted NRFA boundary geometry.
 
 ## Record integrity
 
@@ -416,6 +434,26 @@ the small exclusion sensitivity proves rating homogeneity: the post-works sample
 is too short to separate instrumentation and rating effects from natural flood
 variability.
 
+## Catchment terrain and drainage
+
+The mapped outlet is 33 m from the published Murrayfield coordinate after
+snapping to the conditioned drainage grid. The independently delineated area is
+**112.56 km²**, 5.20% larger than NRFA's rounded published value of 107 km².
+Catchment elevations range from 37.9 to 563.1 m, with a median of 227.5 m, and
+108 OS Open Rivers segments intersect the derived watershed.
+
+The area difference is a diagnostic of DEM resolution, stream burning, outlet
+location and topographic conditioning; it is not evidence that the NRFA area is
+incorrect. In particular, an urban catchment divide need not follow surface
+topography where sewers, culverts and artificial drainage transfer water. The
+figure therefore supports spatial interpretation but is not suitable for formal
+FEH descriptor calculation. Reproducibility metrics are retained in
+`outputs/gis_catchment_summary.csv`; no catchment geometry is distributed.
+
+Copernicus attribution: produced using Copernicus WorldDEM-30 © DLR e.V.
+2010–2014 and © Airbus Defence and Space GmbH 2014–2018 provided under
+COPERNICUS by the European Union and ESA; all rights reserved.
+
 ## Reproduce the analysis
 
 ```bash
@@ -427,6 +465,9 @@ python scripts/run_analysis.py
 python scripts/run_pot_analysis.py
 python scripts/run_diagnostics.py
 python scripts/run_rating_sensitivity.py
+pip install -e ".[gis]"
+python scripts/download_gis_data.py
+python scripts/run_gis_analysis.py
 # Optional after obtaining NRFA v15 under its own licence:
 python scripts/validate_against_nrfa.py
 pytest
@@ -445,16 +486,17 @@ The analysis writes QA diagnostics, annual maxima and fitted return levels to
   temporal comparability of high flows.
 - Reservoir operation, regulation and urban drainage complicate assumptions of
   independent and identically distributed annual maxima.
-- No trend or non-stationary extreme-value model is yet applied.
+- The non-stationary models use calendar time as a diagnostic covariate rather
+  than a causal climate or land-use driver.
 - Results must not be used for engineering design, planning decisions or
   operational flood management.
 
 ## Next analyses
 
-1. Add a licence-checked GIS catchment map showing the gauge, main drainage
-   system, reservoirs, elevation and urban context.
-2. Test the stability of event classes to peak-prominence and duration
+1. Test the stability of event classes to peak-prominence and duration
    thresholds before using them in any predictive model.
+2. Add openly licensed reservoir and urban-land-cover layers if sources with
+   adequate scale, provenance and redistribution terms are identified.
 3. Compare the transparent estimates with legitimately obtained FEH results,
    without redistributing licensed inputs.
 

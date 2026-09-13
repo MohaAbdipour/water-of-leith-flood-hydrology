@@ -2,6 +2,7 @@
 __pycache__/
 .pytest_cache/
 .mplconfig/
+.matplotlib-cache/
 *.egg-info/
 data/raw/*.csv
 !data/raw/README.md

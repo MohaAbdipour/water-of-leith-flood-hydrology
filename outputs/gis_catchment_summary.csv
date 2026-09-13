@@ -1,0 +1,14 @@
+metric,value
+station,Water of Leith at Murrayfield (NRFA 19006)
+outlet_easting_m,322792.0
+outlet_northing_m,673202.0
+snapped_easting_m,322800.0
+snapped_northing_m,673170.0
+snap_distance_m,33.0
+dem_derived_area_km2,112.56
+nrfa_published_area_km2,107.00
+area_difference_percent,5.20
+minimum_elevation_m,37.9
+median_elevation_m,227.5
+maximum_elevation_m,563.1
+mapped_river_segments,108
